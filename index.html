@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In - Relayer</title>
+  <link rel="icon" href="/favicon.ico">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .page {
+      min-height: 100vh;
+      background-color: #f4f4f5;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Background decoration */
+    .bg-decoration {
+      position: absolute;
+      pointer-events: none;
+      width: 102.33vw;
+      height: 106.83vh;
+      left: -1.18vw;
+      top: -3.44vh;
+    }
+    .bg-decoration-inner {
+      position: absolute;
+      inset: -2.94% 0;
+    }
+    .bg-decoration-inner svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Card */
+    .card {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #e4e4e7;
+      width: 100%;
+      max-width: 450px;
+      margin: 0 16px;
+      overflow: clip;
+    }
+
+    /* Header */
+    .card-header {
+      background: #fff;
+      padding: 32px 32px 0 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .logo { height: 28px; width: 110px; }
+    .logo svg { width: 100%; height: 100%; }
+
+    .title {
+      font-size: 22px;
+      font-weight: 600;
+      color: #09090b;
+      letter-spacing: -0.22px;
+    }
+
+    /* Body */
+    .card-body {
+      background: #fff;
+      padding: 24px 32px 32px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+    .form-area {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* SSO button */
+    .sso-btn {
+      width: 100%;
+      padding: 10px 16px;
+      background: #fff;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #09090b;
+      letter-spacing: -0.14px;
+      cursor: default;
+      background-image: linear-gradient(rgba(212,212,216,0) 0%, rgba(212,212,216,0.2) 100%), linear-gradient(90deg, #fff 0%, #fff 100%);
+    }
+    .sso-btn .lock-icon { width: 20px; height: 20px; flex-shrink: 0; }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .divider-line {
+      flex: 1;
+      height: 1px;
+      background: #f4f4f5;
+      border-radius: 4px;
+    }
+    .divider-text {
+      font-size: 12px;
+      font-weight: 600;
+      color: #71717b;
+      letter-spacing: 0.6px;
+      line-height: 1.3;
+      text-transform: uppercase;
+    }
+
+    /* Form fields */
+    .field { display: flex; flex-direction: column; gap: 8px; }
+    .fields { display: flex; flex-direction: column; gap: 16px; }
+
+    .field-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #27272a;
+      letter-spacing: -0.14px;
+      line-height: 1;
+      padding: 0 2px;
+    }
+    .field-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2px;
+    }
+    .forgot-link {
+      font-size: 14px;
+      font-weight: 500;
+      color: #09090b;
+      text-decoration: underline;
+      text-decoration-color: #09090b;
+      letter-spacing: -0.14px;
+      cursor: default;
+    }
+
+    .input {
+      width: 100%;
+      height: 36px;
+      padding: 8px 12px;
+      font-size: 14px;
+      background: #fff;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      outline: none;
+      letter-spacing: -0.14px;
+      line-height: 1.4;
+      color: #09090b;
+      font-family: inherit;
+    }
+    .input::placeholder { color: #71717b; }
+    .input:disabled { opacity: 1; -webkit-text-fill-color: #71717b; cursor: default; }
+    .input:focus {
+      border-color: transparent;
+      box-shadow: 0 0 0 2px #18181b;
+    }
+
+    .password-wrapper { position: relative; }
+    .password-wrapper .input { padding-right: 40px; }
+    .eye-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #71717b;
+      cursor: default;
+      padding: 0;
+      display: flex;
+      align-items: center;
+    }
+    .eye-btn svg { width: 16px; height: 16px; }
+
+    /* Sign in button */
+    .signin-btn {
+      width: 100%;
+      padding: 8px 14px;
+      border: 1px solid #09090b;
+      color: #fafafa;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      letter-spacing: -0.14px;
+      line-height: 1.4;
+      cursor: default;
+      font-family: inherit;
+      text-align: center;
+      background-image: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 100%), linear-gradient(90deg, #09090b 0%, #09090b 100%);
+    }
+
+    /* Footer */
+    .footer-text {
+      font-size: 12px;
+      color: #52525c;
+      text-align: center;
+      letter-spacing: -0.12px;
+      line-height: 1.3;
+    }
+    .footer-text a {
+      color: #52525c;
+      text-decoration: underline;
+      text-decoration-color: #52525c;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- Background decoration -->
+    <div class="bg-decoration">
+      <div class="bg-decoration-inner">
+        <svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" viewBox="0 0 1474 1019" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path opacity="0.5" d="M0 723.784H285.5L551.5 989.784" stroke="#E4E4E7" stroke-width="80"/>
+          <path opacity="0.5" d="M1473.5 294.284H1188L922 28.2843" stroke="#E4E4E7" stroke-width="80"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Login Card -->
+    <div class="card">
+      <!-- Header -->
+      <div class="card-header">
+        <!-- Logo -->
+        <div class="logo">
+          <svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" viewBox="0 0 110 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0)">
+              <path d="M105.509 21.7198H102.37V8.69336H105.509V10.7501C106.122 9.15859 107.25 8.69336 108.354 8.69336C108.649 8.69336 109.85 8.69336 109.85 8.69336V11.9499C109.213 11.9499 108.182 11.9499 107.545 11.9499C106.392 11.9499 105.509 12.6111 105.509 14.0067V21.7198Z" fill="#046539"/>
+              <path d="M95.1798 21.9653C91.3537 21.9653 88.7786 19.1984 88.7786 15.1338C88.7786 11.2896 91.4519 8.44922 95.1061 8.44922C97.1417 8.44922 98.7848 9.23277 99.8886 10.5795C100.992 11.9507 101.336 13.5177 101.336 14.8155C101.336 15.1828 101.311 15.5745 101.262 15.9907H91.9669C92.0404 16.554 92.163 17.0191 92.3347 17.3865C92.8498 18.4638 93.8308 19.1249 95.2778 19.1249C96.9455 19.1249 97.9511 18.4149 98.319 17.0437H101.262C100.551 20.3002 98.319 21.9653 95.1798 21.9653ZM92.0404 13.8605H98.1473C98.0491 12.3179 96.9455 10.9957 95.1061 10.9957C93.7328 10.9957 92.8989 11.6813 92.3347 12.8322C92.2121 13.126 92.1141 13.4688 92.0404 13.8605Z" fill="#046539"/>
+              <path d="M86.2162 8.69336H89.3063L84.524 21.6462V24.3642C84.524 26.1271 83.6655 26.9106 82.1694 26.9106L78.0492 26.8862V24.1682H80.7715C81.2866 24.1682 81.5809 23.8499 81.5809 23.3602V21.6462L76.3815 8.69336H79.717L83.1014 17.7041L86.2162 8.69336Z" fill="#046539"/>
+              <path d="M68.2564 13.3706H65.3869C65.5341 10.3099 67.6433 8.49794 70.7579 8.49794C74.0934 8.49794 76.0309 10.3833 76.0309 14.2765V14.3745V18.2922C76.0309 18.6595 76.2761 18.9044 76.5704 18.9044H77.3552V21.7202H74.8782C73.9462 21.7202 73.4066 20.9855 73.4066 20.1286V19.345C73.2351 19.8103 73.0388 20.1532 72.7935 20.3734C71.9352 21.4264 70.807 21.9651 69.4091 21.9651H69.3355C66.7113 21.9651 65.0681 20.5693 65.0681 18.0472C65.0681 15.4029 67.1282 14.0807 70.9542 14.0807C71.8616 14.0807 72.4257 14.0072 72.6464 13.8848C72.8426 13.7623 72.9408 13.542 72.9408 13.2237V13.1012C72.9408 11.8035 72.1313 11.02 70.7579 11.02C69.4091 11.02 68.3546 11.73 68.2564 13.3706ZM68.1338 17.9004C68.1338 19.0022 68.9921 19.5165 70.2429 19.5165C71.7881 19.5165 72.9408 18.3901 72.9408 16.3089V15.7946C72.9408 16.0151 72.4503 16.1865 70.856 16.1865C69.0903 16.1865 68.1338 16.6272 68.1338 17.9004Z" fill="#046539"/>
+              <path d="M64.0705 3.11111V21.7202H60.9313V3.11111H64.0705Z" fill="#046539"/>
+              <path d="M53.7655 21.9653C49.9395 21.9653 47.3645 19.1984 47.3645 15.1338C47.3645 11.2896 50.0377 8.44922 53.692 8.44922C55.7275 8.44922 57.3708 9.23277 58.4744 10.5795C59.5779 11.9507 59.9213 13.5177 59.9213 14.8155C59.9213 15.1828 59.8969 15.5745 59.8478 15.9907H50.5526C50.6263 16.554 50.749 17.0191 50.9207 17.3865C51.4356 18.4638 52.4166 19.1249 53.8635 19.1249C55.5313 19.1249 56.5369 18.4149 56.9047 17.0437H59.8478C59.1365 20.3002 56.9047 21.9653 53.7655 21.9653ZM50.6263 13.8605H56.733C56.635 12.3179 55.5313 10.9957 53.692 10.9957C52.3186 10.9957 51.4847 11.6813 50.9207 12.8322C50.798 13.126 50.6999 13.4688 50.6263 13.8605Z" fill="#046539"/>
+              <path d="M39.7377 15.7951H36.6965V21.7206H33.4347V4.04199H39.7377C43.8334 4.04199 46.4822 6.2212 46.4822 9.89404C46.4822 12.4161 45.3049 14.1545 43.3183 15.1095C43.2202 15.134 43.1222 15.1829 43.0486 15.2074L47.3159 21.7206H43.5391L39.7866 15.7951H39.7377ZM39.9583 6.93128H36.6965V12.8078H39.9583C41.7978 12.8078 43.1957 11.7305 43.1957 9.77162C43.1957 7.9352 41.8958 6.93128 39.9583 6.93128Z" fill="#046539"/>
+              <path d="M28.0453 18.667V21.7781H22.4585L16.2262 28.0003H0V24.8892H14.9353L21.1675 18.667H28.0453Z" fill="#046539"/>
+              <path d="M28.0453 12.4444V15.5556H19.3424L13.11 21.7778H0V18.6667H11.8191L18.0514 12.4444H28.0453Z" fill="#046539"/>
+              <path d="M28.0453 6.22266V9.33377H16.2262L9.99389 15.556H0V12.4449H8.70299L14.9353 6.22266H28.0453Z" fill="#046539"/>
+              <path d="M28.0453 0V3.11111H13.11L6.87774 9.33333H0V6.22222H5.58685L11.8191 0H28.0453Z" fill="#046539"/>
+            </g>
+            <defs>
+              <clipPath id="clip0"><rect width="110" height="28" fill="white"/></clipPath>
+            </defs>
+          </svg>
+        </div>
+
+        <!-- Title -->
+        <div>
+          <h1 class="title">Welcome back!</h1>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="card-body">
+        <div class="form-area">
+          <!-- SSO Button -->
+          <div>
+            <div class="sso-btn">
+              <div class="lock-icon">
+                <svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" viewBox="0 0 15 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7.41667 12.8333V11.1667" stroke="#09090B" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M0.973176 14.7873C1.16058 16.1791 2.31344 17.2696 3.71638 17.3341C4.89689 17.3884 6.09609 17.4167 7.41667 17.4167C8.73725 17.4167 9.93644 17.3884 11.117 17.3341C12.5199 17.2696 13.6728 16.1791 13.8602 14.7873C13.9825 13.8789 14.0833 12.948 14.0833 12C14.0833 11.052 13.9825 10.1211 13.8602 9.21271C13.6728 7.82085 12.5199 6.73041 11.117 6.66591C9.93644 6.61164 8.73725 6.58333 7.41667 6.58333C6.09609 6.58333 4.89689 6.61164 3.71638 6.66591C2.31344 6.73041 1.16058 7.82085 0.973176 9.21271C0.850871 10.1211 0.75 11.052 0.75 12C0.75 12.948 0.850872 13.8789 0.973176 14.7873Z" stroke="#09090B" stroke-width="1.5"/>
+                  <path d="M3.66667 6.58333V4.5C3.66667 2.42893 5.34561 0.75 7.41667 0.75C9.48774 0.75 11.1667 2.42893 11.1667 4.5V6.58333" stroke="#09090B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              Sign in with SSO
+            </div>
+          </div>
+
+          <!-- Divider -->
+          <div class="divider">
+            <div class="divider-line"></div>
+            <span class="divider-text">OR</span>
+            <div class="divider-line"></div>
+          </div>
+
+          <!-- Form -->
+          <div class="fields">
+            <!-- Email -->
+            <div class="field">
+              <label class="field-label" for="email">Email address</label>
+              <input id="email" type="email" class="input" placeholder="me@company.com" disabled>
+            </div>
+
+            <!-- Password -->
+            <div class="field">
+              <div class="field-header">
+                <label class="field-label" for="password">Password</label>
+                <span class="forgot-link">Forgot password?</span>
+              </div>
+              <div class="password-wrapper">
+                <input id="password" type="password" class="input" placeholder="enter your password" disabled>
+                <span class="eye-btn">
+                  <!-- Eye icon (lucide) -->
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                </span>
+              </div>
+            </div>
+
+            <!-- Sign In Button -->
+            <div class="signin-btn">Sign in</div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <p class="footer-text">
+          By signing in, you agree to our <a href="javascript:void(0)">terms and conditions</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
